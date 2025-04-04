@@ -71,3 +71,78 @@ This endpoint allows the registration of a new user. It requires valid email, fi
 - The endpoint validates the input data using express-validator.
 - The password is hashed before saving the user.
 - A JWT token is created and returned upon successful registration.
+
+
+
+# /Users/login Endpoint Documentation
+
+## Description
+
+This endpoint allows an existing user to log in by providing their email and password. Upon successful authentication, a JWT token is returned.
+
+## URL
+
+`POST /login`
+
+## Required Data
+
+- **email**: Must be a valid email address.
+- **password**: Must be at least 6 characters long.
+
+### Request Body Example
+
+```json
+{
+  "email": "john.doe@example.com",
+  "password": "securePass123"
+}
+```
+
+## Response
+
+### Success
+
+- **Status Code**: 200
+- **Body**: JSON containing a JWT token and the authenticated user object.
+
+```json
+{
+  "token": "jwt_token_here",
+  "user": {
+    "email": "john.doe@example.com"
+    // ...other user properties...
+  }
+}
+```
+
+### Error
+
+- **Status Code**: 400
+- **Error Body Example**:
+
+```json
+{
+  "errors": [
+    {
+      "msg": "Invalid email",
+      "param": "email"
+      // ...other error info...
+    }
+  ]
+}
+```
+
+- **Status Code**: 401
+- **Error Body Example**:
+
+```json
+{
+  "message": "Invalid email or password"
+}
+```
+
+## Notes
+
+- The endpoint validates the input data using express-validator.
+- The password is compared with the hashed password stored in the database.
+- A JWT token is created and returned upon successful authentication.
