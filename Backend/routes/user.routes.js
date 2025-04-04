@@ -2,7 +2,7 @@ const express=require("express");
 const router=express.Router();
 const {body}=require('express-validator');
 const userController=require('../controllers/user.controller')
-
+const authMidlleware=require('../middlewares/auth.midlleware');
 
 router.post('/register',[
     body('email').isEmail().withMessage("Invalid email"),
@@ -15,4 +15,8 @@ router.post('/login',[
     body('password').isLength({min:6}).withMessage("Invalid password")
 ], userController.loginUser)
 
+
+router.get('/profile',authMidlleware.authUser,userController.getUserProfile)
+
+router.get('/logout',authMidlleware.authUser,userController.logoutUser);
 module.exports=router;
