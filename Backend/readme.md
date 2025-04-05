@@ -241,3 +241,104 @@ This endpoint logs out the currently authenticated user by clearing their authen
 - The endpoint clears the authentication token from cookies (if used).
 - The token is added to a blacklist to prevent further use.
 - The user must be authenticated to access this endpoint.
+
+
+# /Captains/register Endpoint Documentation
+
+## Description
+
+This endpoint allows the registration of a new captain. It requires valid email, first name, password, and vehicle details.
+
+## URL
+
+`POST /register`
+
+## Required Data
+
+- **email**: Must be a valid email address.
+- **fullname.firstname**: First name (minimum 3 characters).
+- **fullname.lastname**: (Optional) Last name (minimum 3 characters if provided).
+- **password**: Must be at least 6 characters long.
+- **vehicle.color**: Vehicle color (minimum 3 characters).
+- **vehicle.plate**: Vehicle plate number (minimum 3 characters).
+- **vehicle.capacity**: Vehicle capacity (must be at least 1).
+- **vehicle.vehicleType**: Type of vehicle (must be one of `car`, `motorcycle`, or `auto`).
+
+### Request Body Example
+
+```json
+{
+  "fullname": {
+    "firstname": "John",
+    "lastname": "Doe"
+  },
+  "email": "john.doe@example.com",
+  "password": "securePass123",
+  "vehicle": {
+    "color": "Red",
+    "plate": "ABC123",
+    "capacity": 4,
+    "vehicleType": "car"
+  }
+}
+```
+
+## Response
+
+### Success
+
+- **Status Code**: 200
+- **Body**: JSON containing a JWT token and the created captain object.
+
+```json
+{
+  "token": "jwt_token_here",
+  "captain": {
+    "fullname": {
+      "firstname": "John",
+      "lastname": "Doe"
+    },
+    "email": "john.doe@example.com",
+    "vehicle": {
+      "color": "Red",
+      "plate": "ABC123",
+      "capacity": 4,
+      "vehicleType": "car"
+    }
+    // ...other captain properties...
+  }
+}
+```
+
+### Error
+
+- **Status Code**: 400
+- **Error Body Example**:
+
+```json
+{
+  "errors": [
+    {
+      "msg": "Invalid email",
+      "param": "email"
+      // ...other error info...
+    }
+  ]
+}
+```
+
+- **Status Code**: 400 (If captain already exists)
+- **Error Body Example**:
+
+```json
+{
+  "message": "Captain already exist"
+}
+```
+
+## Notes
+
+- The endpoint validates the input data using express-validator.
+- The password is hashed before saving the captain.
+- A JWT token is created and returned upon successful registration.
+- Vehicle details are required and validated for completeness and correctness.
