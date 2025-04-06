@@ -72,8 +72,6 @@ This endpoint allows the registration of a new user. It requires valid email, fi
 - The password is hashed before saving the user.
 - A JWT token is created and returned upon successful registration.
 
-
-
 # /Users/login Endpoint Documentation
 
 ## Description
@@ -146,7 +144,6 @@ This endpoint allows an existing user to log in by providing their email and pas
 - The endpoint validates the input data using express-validator.
 - The password is compared with the hashed password stored in the database.
 - A JWT token is created and returned upon successful authentication.
-
 
 # /Users/profile Endpoint Documentation
 
@@ -241,7 +238,6 @@ This endpoint logs out the currently authenticated user by clearing their authen
 - The endpoint clears the authentication token from cookies (if used).
 - The token is added to a blacklist to prevent further use.
 - The user must be authenticated to access this endpoint.
-
 
 # /Captains/register Endpoint Documentation
 
@@ -342,3 +338,156 @@ This endpoint allows the registration of a new captain. It requires valid email,
 - The password is hashed before saving the captain.
 - A JWT token is created and returned upon successful registration.
 - Vehicle details are required and validated for completeness and correctness.
+
+### 2. **POST /login**
+
+#### Description
+
+Logs in an existing captain using their email and password.
+
+#### Request Body
+
+```json
+{
+  "email": "john.doe@example.com", // Required, must be a valid email
+  "password": "securePass123" // Required, minimum 6 characters
+}
+```
+
+#### Response
+
+##### Success
+
+- **Status Code**: 200
+- **Body**:
+
+```json
+{
+  "token": "jwt_token_here", // JWT token for authentication
+  "captain": {
+    "fullname": {
+      "firstname": "John",
+      "lastname": "Doe"
+    },
+    "email": "john.doe@example.com",
+    "vehicle": {
+      "color": "Red",
+      "plate": "ABC123",
+      "capacity": 4,
+      "vehicleType": "car"
+    }
+    // ...other captain properties...
+  }
+}
+```
+
+##### Error
+
+- **Status Code**: 400 (Validation Error)
+- **Body**:
+
+```json
+{
+  "errors": [
+    {
+      "msg": "Invalid email",
+      "param": "email"
+      // ...other error details...
+    }
+  ]
+}
+```
+
+- **Status Code**: 401 (Invalid Credentials)
+- **Body**:
+
+```json
+{
+  "message": "Invalid email or password"
+}
+```
+
+---
+
+### 3. **GET /profile**
+
+#### Description
+
+Retrieves the profile of the currently authenticated captain.
+
+#### Headers
+
+- **Authorization**: Bearer `<JWT_TOKEN>` (if not using cookies).
+
+#### Response
+
+##### Success
+
+- **Status Code**: 200
+- **Body**:
+
+```json
+{
+  "captain": {
+    "fullname": {
+      "firstname": "John",
+      "lastname": "Doe"
+    },
+    "email": "john.doe@example.com",
+    "vehicle": {
+      "color": "Red",
+      "plate": "ABC123",
+      "capacity": 4,
+      "vehicleType": "car"
+    }
+    // ...other captain properties...
+  }
+}
+```
+
+##### Error
+
+- **Status Code**: 401
+- **Body**:
+
+```json
+{
+  "message": "Unauthorized"
+}
+```
+
+---
+
+### 4. **GET /logout**
+
+#### Description
+
+Logs out the currently authenticated captain by blacklisting their token.
+
+#### Headers
+
+- **Authorization**: Bearer `<JWT_TOKEN>` (if not using cookies).
+
+#### Response
+
+##### Success
+
+- **Status Code**: 200
+- **Body**:
+
+```json
+{
+  "message": "Logout successfully!"
+}
+```
+
+##### Error
+
+- **Status Code**: 401
+- **Body**:
+
+```json
+{
+  "message": "Unauthorized"
+}
+```
